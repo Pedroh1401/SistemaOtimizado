@@ -1,0 +1,84 @@
+﻿@model IEnumerable<SistemaOtimizado.Models.Produto>
+
+@{
+    ViewData["Title"] = "Versão Rápida";
+}
+
+<div class="container mt-4">
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <strong>⚙️ Painel de Controle (Otimizado)</strong>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-6 border-end">
+                    <h5>1. Gerenciar Dados</h5>
+                    <div class="d-flex justify-content-center gap-2 mt-3">
+                        <form asp-action="GerarDadosMassivos" method="post">
+                            <button class="btn btn-outline-primary btn-sm">📥 Popular</button>
+                        </form>
+                        <form asp-action="LimparDados" method="post">
+                            <button class="btn btn-outline-danger btn-sm">🗑️ Limpar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>2. Testar Performance</h5>
+                    <a href="@Url.Action("Index", new { iniciarTeste = true, pagina = 1 })" class="btn btn-success btn-lg w-100">
+                        🚀 EXECUTAR TESTE RÁPIDO
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (ViewBag.TesteExecutado == true)
+    {
+        <div class="alert alert-success text-center">
+            <h1>🟢 Tempo: @ViewBag.Tempo</h1>
+            <p>Exibindo página <strong>@ViewBag.PaginaAtual</strong> de <strong>@ViewBag.TotalPaginas</strong> (100 itens por vez).</p>
+        </div>
+
+        <table class="table table-striped table-sm mt-3">
+            <thead class="table-success">
+                <tr><th>ID</th><th>Produto</th><th>Categoria</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Nome</td>
+                        <td>@item.Categoria?.Nome</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-center gap-2 mb-5">
+            @if (ViewBag.PaginaAtual > 1)
+            {
+                <a href="@Url.Action("Index", new { iniciarTeste = true, pagina = ViewBag.PaginaAtual - 1 })" class="btn btn-outline-success">
+                    ⬅️ Anterior
+                </a>
+            }
+
+            <span class="align-self-center fw-bold">Página @ViewBag.PaginaAtual</span>
+
+            @if (ViewBag.PaginaAtual < ViewBag.TotalPaginas)
+            {
+                <a href="@Url.Action("Index", new { iniciarTeste = true, pagina = ViewBag.PaginaAtual + 1 })" class="btn btn-outline-success">
+                    Próxima ➡️
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5 text-muted">
+            <h4>Pronto para o teste.</h4>
+            <p>O sistema carregará os dados instantaneamente usando paginação.</p>
+        </div>
+    }
+</div>
